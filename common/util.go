@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"pfc/models"
+	"pfc/models/dto.go"
 	"strconv"
 )
 
@@ -92,4 +93,33 @@ func ComputeModulus(value string, divisor int) int {
 		result = (result*10 + int(value[x]) - '0') % divisor
 	}
 	return result
+}
+
+func ValidateIban(iban string) dto.IbanResponse {
+	// Initialize IbanResponse
+	var ibanResponse dto.IbanResponse
+	ibanResponse.IsValid = false
+	ibanResponse.Message = "IBAN is NOT VALID"
+
+	// • IBAN:      GB82 WEST 1234 5698 7654 32
+	// Validate Country Code
+	countryCode := iban[0:2]
+	if ValidateCountryCode(countryCode) != true {
+		return ibanResponse
+	}
+
+	// • Rearrange:     W E S T12345698765432 G B82
+	// First 2 characters are Country Code and the Next 2 characters are Check digit to be moved to the end of the IBAN
+	rearrangedIban := iban[4:len(iban)] + iban[0:4]
+
+	// • Convert to integer:        3214282912345698765432161182
+	ibanConversionToInteger := ConvertToInteger(rearrangedIban)
+
+	// Find modulus 97 of the Integer Converted Version of the IBAN
+	value := ComputeModulus(ibanConversionToInteger, 97)
+	if value == 1 {
+		ibanResponse.IsValid = true
+		ibanResponse.Message = "IBAN is VALID"
+	}
+	return ibanResponse
 }
