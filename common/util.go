@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"pfc/models"
-	"pfc/models/dto.go"
 	"strconv"
 )
 
@@ -84,32 +83,13 @@ func ValidateCountryCode(code string) bool {
 	}
 }
 
-func ValidateIban(iban string) dto.IbanResponse {
-	// Initialize IbanResponse
-	var ibanResponse dto.IbanResponse
-	ibanResponse.IsValid = false
-	ibanResponse.Message = "IBAN is NOT VALID"
-
-	// • IBAN:		GB82 WEST 1234 5698 7654 32
-	// Validate Country Code
-	countryCode := iban[0:2]
-	if ValidateCountryCode(countryCode) != true {
-		return ibanResponse
+// Function to compute Modulus of Large number
+func ComputeModulus(value string, divisor int) int {
+	// Initialize result
+	result := 0
+	// One by one process all digits of 'num'
+	for x := 0; x < len(value); x++ {
+		result = (result*10 + int(value[x]) - '0') % divisor
 	}
-
-	// • Rearrange:		W E S T12345698765432 G B82
-	// First 2 characters are Country Code and the Next 2 characters are Check digit to be moved to the end of the IBAN
-	rearrangedIban := iban[4:len(iban)] + iban[0:4]
-
-	// • Convert to integer:		3214282912345698765432161182
-	integerIbanConversion := ConvertToInteger(rearrangedIban)
-
-	// • Compute remainder:		3214282912345698765432161182	mod 97 = 1
-	isValid := strconv.ParseInt(integerIbanConversion, 10, 64) % 97
-
-	if isValid == true {
-		ibanResponse.IsValid = true
-		ibanResponse.Message = "IBAN is VALID"
-	}
-	return ibanResponse
+	return result
 }
