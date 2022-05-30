@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"pfc/models"
 	"pfc/models/dto.go"
+	"strconv"
 )
 
 func ValidateIban(iban string) dto.IbanResponse {
@@ -56,4 +57,22 @@ func LookUpTable(letter string) int {
 		"Y": 34, "Z": 35,
 	}
 	return m[letter]
+}
+
+// This function converts the Rearrange IBAN to Integer
+func ConvertToInteger(rearrangeIban string) string {
+
+	rerrangedIbanToIntegerValue := ""
+	for _, value := range rearrangeIban {
+
+		_, err := strconv.Atoi(string(value))
+		if err != nil {
+			toInt := LookUpTable(string(value))
+			rerrangedIbanToIntegerValue = rerrangedIbanToIntegerValue + strconv.Itoa(toInt)
+		} else {
+			rerrangedIbanToIntegerValue = rerrangedIbanToIntegerValue + string(value)
+		}
+
+	}
+	return rerrangedIbanToIntegerValue
 }
