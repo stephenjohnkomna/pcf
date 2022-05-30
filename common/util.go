@@ -100,6 +100,7 @@ func ValidateIban(iban string) dto.IbanResponse {
 	var ibanResponse dto.IbanResponse
 	ibanResponse.IsValid = false
 	ibanResponse.Message = "IBAN is NOT VALID"
+	ibanResponse.Iban = iban
 
 	// • IBAN:      GB82 WEST 1234 5698 7654 32
 	// Validate Country Code
