@@ -1,4 +1,4 @@
-package models
+package dto
 
 type IbanResponse struct {
 	IsValid bool   `json:"isvalid"`

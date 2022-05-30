@@ -2,13 +2,13 @@ package service
 
 import (
 	"pfc/common"
-	models "pfc/models/responsemodel.go"
+	"pfc/models/dto.go"
 
 	"github.com/gin-gonic/gin"
 )
 
-func ValidateIban(context *gin.Context) models.IbanResponse {
-	var ibanResponse models.IbanResponse
+func ValidateIban(context *gin.Context) dto.IbanResponse {
+	var ibanResponse dto.IbanResponse
 	iban := context.Params.ByName("iban")
 	ibanResponse = common.ValidateIban(iban)
 	ibanResponse.IsValid = true
